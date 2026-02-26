@@ -53,6 +53,7 @@ h1 { margin: 0 0 8px; }
   border-radius: 999px;
   background: #e2e8f0;
   overflow: hidden;
+  margin-top: 10px;
 }
 .bar > span {
   display: block;
@@ -64,7 +65,7 @@ h1 { margin: 0 0 8px; }
   padding: 10px 0;
 }
 .food-item:first-of-type { border-top: none; }
-input[type="date"], textarea {
+input[type="date"], textarea, input[type="text"], select {
   width: 100%;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
@@ -83,3 +84,153 @@ button {
 .btn-primary { background: var(--primary); color: white; }
 .btn-ok { background: var(--ok); color: white; }
 .small { font-size: 12px; color: var(--muted); }
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.tabs {
+  display: flex;
+  gap: 8px;
+}
+.tab {
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  color: var(--muted);
+  padding: 8px 16px;
+}
+.tab.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.filters {
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.filter-group label {
+  font-size: 12px;
+  color: var(--muted);
+}
+.filter-group.search {
+  flex: 1;
+  min-width: 200px;
+}
+
+.calendar-container {
+  margin-top: 20px;
+  background: var(--card);
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px;
+}
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.month-title {
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.weekday {
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  padding: 8px 0;
+}
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: var(--card);
+  cursor: pointer;
+  padding: 4px;
+  transition: all 0.15s;
+}
+.calendar-day.empty {
+  background: transparent;
+  border: none;
+  cursor: default;
+}
+.calendar-day:hover:not(.empty) {
+  border-color: var(--primary);
+}
+.calendar-day.has-food {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+.calendar-day.selected {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+.day-number {
+  font-size: 14px;
+  font-weight: 500;
+}
+.food-count {
+  font-size: 10px;
+  color: var(--ok);
+}
+.calendar-day.selected .food-count {
+  color: white;
+}
+
+.day-details {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+.day-details h3 {
+  margin: 0 0 12px;
+}
+.day-foods {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.day-foods li {
+  padding: 12px;
+  background: #f1f5f9;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+.day-foods .note {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+.btn-close {
+  margin-top: 12px;
+  background: #e2e8f0;
+  color: var(--text);
+}
