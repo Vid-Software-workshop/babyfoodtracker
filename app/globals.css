@@ -60,11 +60,6 @@ h1 { margin: 0 0 8px; }
   height: 100%;
   background: linear-gradient(90deg, #2563eb, #16a34a);
 }
-.food-item {
-  border-top: 1px solid #eef2f7;
-  padding: 10px 0;
-}
-.food-item:first-of-type { border-top: none; }
 input[type="date"], textarea, input[type="text"], select {
   width: 100%;
   border: 1px solid #cbd5e1;
@@ -233,4 +228,91 @@ button {
   margin-top: 12px;
   background: #e2e8f0;
   color: var(--text);
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+.modal {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modal h2 {
+  margin: 0 0 20px;
+  font-size: 18px;
+}
+
+.modal-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--muted);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  flex: 1;
+}
+
+.btn-secondary {
+  background: #e2e8f0;
+  color: var(--text);
+}
+
+.food-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-top: 1px solid #eef2f7;
+}
+
+.food-item:first-of-type {
+  border-top: none;
+}
+
+.food-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.food-name {
+  font-weight: 500;
+}
+
+.food-status {
+  font-size: 12px;
+}
+
+.food-status.probado {
+  color: var(--ok);
+}
+
+.food-status.pendiente {
+  color: var(--muted);
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 13px;
 }

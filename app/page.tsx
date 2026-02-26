@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 
 type Category = "Frutas" | "Verduras" | "Proteína" | "Cereales";
 
@@ -62,6 +62,42 @@ export default function Home() {
   const [filterCategory, setFilterCategory] = useState<Category | "todas">("todas");
   const [search, setSearch] = useState("");
   const [calendarMonth, setCalendarMonth] = useState(() => new Date());
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedFoodId, setSelectedFoodId] = useState<string | null>(null);
+  const [modalDate, setModalDate] = useState("");
+  const [modalNote, setModalNote] = useState("");
+
+  const selectedFood = selectedFoodId ? FOODS.find((f) => f.id === selectedFoodId) : null;
+  const currentTrial = selectedFoodId ? trials[selectedFoodId] : undefined;
+
+  const openModal = useCallback((foodId: string) => {
+    const trial = trials[foodId];
+    setSelectedFoodId(foodId);
+    setModalDate(trial?.date ?? new Date().toISOString().slice(0, 10));
+    setModalNote(trial?.note ?? "");
+    setModalOpen(true);
+  }, [trials]);
+
+  const closeModal = useCallback(() => {
+    setModalOpen(false);
+    setSelectedFoodId(null);
+  }, []);
+
+  const saveFromModal = useCallback(() => {
+    if (selectedFoodId) {
+      saveTrial(selectedFoodId, modalDate, modalNote);
+      closeModal();
+    }
+  }, [selectedFoodId, modalDate, modalNote, closeModal]);
+
+  useEffect(() => {
+    if (!modalOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeModal();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [modalOpen, closeModal]);
 
   const filteredFoods = useMemo(() => {
     return FOODS.filter((food) => {
@@ -192,7 +228,7 @@ export default function Home() {
 
                   <div style={{ marginTop: 10 }}>
                     {categoryFiltered.map((food) => (
-                      <FoodItem key={food.id} food={food} trial={trials[food.id]} onSave={saveTrial} />
+                      <FoodItem key={food.id} food={food} trial={trials[food.id]} onClick={() => openModal(food.id)} />
                     ))}
                   </div>
                 </article>
@@ -209,6 +245,37 @@ export default function Home() {
           trialsByDate={trialsByDate}
           trials={trials}
         />
+      )}
+
+      {modalOpen && selectedFood && (
+        <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) closeModal(); }}>
+          <div className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <h2 id="modal-title">{currentTrial ? `Actualizar: ${selectedFood.name}` : `Probar: ${selectedFood.name}`}</h2>
+            
+            <label className="modal-label">Fecha</label>
+            <input
+              type="date"
+              value={modalDate}
+              onChange={(e) => setModalDate(e.target.value)}
+            />
+
+            <label className="modal-label">Nota</label>
+            <textarea
+              value={modalNote}
+              onChange={(e) => setModalNote(e.target.value)}
+              placeholder="Ej. Le gustó mucho, sin reacción..."
+            />
+
+            <div className="modal-actions">
+              <button className="btn-primary" onClick={saveFromModal}>
+                Guardar
+              </button>
+              <button className="btn-secondary" onClick={closeModal}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </main>
   );
@@ -315,34 +382,23 @@ function CalendarView({
 function FoodItem({
   food,
   trial,
-  onSave,
+  onClick,
 }: {
   food: Food;
   trial?: Trial;
-  onSave: (foodId: string, date: string, note: string) => void;
+  onClick: () => void;
 }) {
-  const today = new Date().toISOString().slice(0, 10);
-  const [date, setDate] = useState(trial?.date ?? today);
-  const [note, setNote] = useState(trial?.note ?? "");
-
   return (
     <div className="food-item">
-      <div className="row">
-        <strong>{food.name}</strong>
-        {trial ? <span className="small">Probado: {trial.date}</span> : <span className="small">Pendiente</span>}
+      <div className="food-info">
+        <span className="food-name">{food.name}</span>
+        <span className={`food-status ${trial ? "probado" : "pendiente"}`}>
+          {trial ? `Probado: ${trial.date}` : "Pendiente"}
+        </span>
       </div>
-
-      <label className="small">Fecha</label>
-      <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-
-      <label className="small">Nota</label>
-      <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="Ej. Le gustó mucho, sin reacción..." />
-
-      <div style={{ marginTop: 8 }}>
-        <button className={trial ? "btn-primary" : "btn-ok"} onClick={() => onSave(food.id, date, note)}>
-          {trial ? "Actualizar" : "Marcar como probado"}
-        </button>
-      </div>
+      <button className={trial ? "btn-primary btn-sm" : "btn-ok btn-sm"} onClick={onClick}>
+        {trial ? "Actualizar" : "Probar"}
+      </button>
     </div>
   );
 }
